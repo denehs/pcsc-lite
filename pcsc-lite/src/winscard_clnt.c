@@ -390,7 +390,6 @@ static LONG SCardEstablishContextTH(DWORD, LPCVOID, LPCVOID,
 LONG SCardEstablishContext(DWORD dwScope, LPCVOID pvReserved1,
 	LPCVOID pvReserved2, LPSCARDCONTEXT phContext)
 {
-	__android_log_print(ANDROID_LOG_INFO, "pcsc", "hihihihi");
 	LONG rv;
 	int daemon_launched = FALSE;
 	int retries = 0;
@@ -398,19 +397,15 @@ LONG SCardEstablishContext(DWORD dwScope, LPCVOID pvReserved1,
 	PROFILE_START
 
 again:
-	__android_log_print(ANDROID_LOG_INFO, "pcsc", "again:");
 	/* Check if the server is running */
 	rv = SCardCheckDaemonAvailability();
-	__android_log_print(ANDROID_LOG_INFO, "pcsc", "1rv = %d", rv);
 	if (SCARD_E_INVALID_HANDLE == rv)
 		/* we reconnected to a daemon or we got called from a forked child */
 		rv = SCardCheckDaemonAvailability();
 
-	__android_log_print(ANDROID_LOG_INFO, "pcsc", "2rv = %d", rv);
 	if (SCARD_E_NO_SERVICE == rv)
 	{
 launch:
-	__android_log_print(ANDROID_LOG_INFO, "pcsc", "launch:");
 		if (daemon_launched)
 		{
 			retries++;
@@ -434,7 +429,6 @@ launch:
 			{
 				Log2(PCSC_LOG_CRITICAL, "fork failed: %s", strerror(errno));
 				rv = SCARD_F_INTERNAL_ERROR;
-				__android_log_print(ANDROID_LOG_INFO, "pcsc", "3rv = %d", rv);
 				goto end;
 			}
 
@@ -448,7 +442,6 @@ launch:
 					(char *)NULL);
 				Log2(PCSC_LOG_CRITICAL, "exec " PCSCD_BINARY " failed: %s",
 					strerror(errno));
-	__android_log_print(ANDROID_LOG_INFO, "pcsc", "wtf????");
 				exit(1);
 			}
 
@@ -469,7 +462,6 @@ launch:
 	rv = SCardEstablishContextTH(dwScope, pvReserved1,
 		pvReserved2, phContext);
 	(void)SCardUnlockThread();
-	__android_log_print(ANDROID_LOG_INFO, "pcsc", "5rv = %d", rv);
 
 	/* SCardEstablishContextTH may fail if the previous pcscd crashed
 	 * without cleaning /var/run/pcscd/pcscd.comm */
@@ -481,7 +473,6 @@ launch:
 	}
 
 end:
-	__android_log_print(ANDROID_LOG_INFO, "pcsc", "end:");
 	PROFILE_END(rv)
 
 	return rv;

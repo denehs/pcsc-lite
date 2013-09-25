@@ -13,7 +13,7 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
-LOCAL_SRC_FILES := proxy.cpp ifdsmartcardapi.c ISmartcardAPI.cpp 
+LOCAL_SRC_FILES := proxy.cpp ifdsmartcardapi.c SmartcardAPI.cpp 
 
 LOCAL_C_INCLUDES	:= $(common_c_includes)
 LOCAL_CFLAGS		:= -g -fpic -w 

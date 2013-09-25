@@ -17,14 +17,15 @@
 #include <binder/IServiceManager.h>
 #include <utils/Log.h>
 #include <sys/stat.h>
-#include "ISmartcardAPI.h"
+#include "SmartcardAPI.h"
 
 #undef LOG_TAG
 #define LOG_TAG "ifdhandler proxy"
 
+#define LOGI(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__);
 using namespace android;
 
-static sp<ISmartcardAPI> gSmartcardAPI = 0; 
+static sp<SmartcardAPI> gSmartcardAPI = 0; 
 
 typedef struct 
 {
@@ -56,7 +57,7 @@ unsigned char* convert_string16_to_string8(String16 str16, int* outlen);
 extern "C"
 void proxy_readerlist_addchannel (unsigned long Lun, unsigned long Channel ) 
 {
-	//LOGI("proxy_readerlist_addchannel - Lun: %lu, channel %lu",Lun, Channel);
+	LOGI("proxy_readerlist_addchannel - Lun: %lu, channel %lu",Lun, Channel);
 	bool bExist = false;	
 	for (int i=0; i<readerlist.size();++i)
 	{
@@ -105,7 +106,7 @@ void proxy_readerlist_addchannel (unsigned long Lun, unsigned long Channel )
 
 void proxy_readerlist_addhandle (unsigned long Lun, long long int handle, int iLogicalChannel ) 
 {
-	//LOGI("proxy_readerlist_addhandle - Lun %lu, handle: %lli, logical channel: %i",Lun, handle, iLogicalChannel);			
+	LOGI("proxy_readerlist_addhandle - Lun %lu, handle: %lli, logical channel: %i",Lun, handle, iLogicalChannel);			
 	for (int i=0; i<readerlist.size();++i)
 	{
 		if (readerlist[i].lun == Lun)
@@ -144,7 +145,7 @@ void proxy_readerlist_addhandle (unsigned long Lun, long long int handle, int iL
 
 void proxy_readerlist_invalidateHandle (unsigned long Lun, int iLogicalChannel ) 
 {
-	//LOGI("proxy_readerlist_invalidateHandle, Lun: %lu, log. channel: %i",Lun,iLogicalChannel);		
+	LOGI("proxy_readerlist_invalidateHandle, Lun: %lu, log. channel: %i",Lun,iLogicalChannel);		
 	for (int i=0; i<readerlist.size();++i)
 	{
 		if (readerlist[i].lun == Lun)
@@ -182,7 +183,7 @@ void proxy_readerlist_invalidateHandle (unsigned long Lun, int iLogicalChannel )
 
 void proxy_readerlist_removeChannelEntry(unsigned long Lun)
 {
-	//LOGI("proxy_readerlist_removeChannelEntry Lun: %lu",Lun);		
+	LOGI("proxy_readerlist_removeChannelEntry Lun: %lu",Lun);		
 	for (int i=0; i<readerlist.size();++i)
 	{
 		if (readerlist[i].lun == Lun)
@@ -199,7 +200,7 @@ void proxy_readerlist_removeChannelEntry(unsigned long Lun)
 */
 long long int proxy_readerlist_gethandle (unsigned long Lun, int iLogChannel)
 {
-	//LOGI("proxy_readerlist_gethandle - Lun %lu, logical channel %i", Lun,iLogChannel);	
+	LOGI("proxy_readerlist_gethandle - Lun %lu, logical channel %i", Lun,iLogChannel);	
 	for (int i=0; i<readerlist.size();++i)
 	{
 		if (readerlist[i].lun == Lun)
@@ -226,17 +227,17 @@ long long int proxy_readerlist_gethandle (unsigned long Lun, int iLogChannel)
 
 				default: break;
 			}
-			//LOGI("proxy_readerlist_gethandle - Lun %lu, handle from list: %lli ",Lun, handle);	
+			LOGI("proxy_readerlist_gethandle - Lun %lu, handle from list: %lli ",Lun, handle);	
 			return handle;
 		}
 	}
-	//LOGI("proxy_readerlist_gethandle - handle not in list");
+	LOGI("proxy_readerlist_gethandle - handle not in list");
 	return -1;
 }
 
 bool proxy_readerlist_isLogicalChannelOpen (unsigned long Lun, int iLogChannel)
 {
-	//LOGI("proxy_readerlist_isLogicalChannelOpen Lun: %lu, logical channel: %i", Lun,iLogChannel);	
+	LOGI("proxy_readerlist_isLogicalChannelOpen Lun: %lu, logical channel: %i", Lun,iLogChannel);	
 	bool bChannelOpen = false;		
 	for (int i=0; i<readerlist.size();++i)
 	{
@@ -266,14 +267,14 @@ bool proxy_readerlist_isLogicalChannelOpen (unsigned long Lun, int iLogChannel)
 			
 		}
 	}
-	//LOGI("proxy_readerlist_isLogicalChannelOpen - Lun %lu, channel open: %s", Lun, bChannelOpen ? "true" : "false");	
+	LOGI("proxy_readerlist_isLogicalChannelOpen - Lun %lu, channel open: %s", Lun, bChannelOpen ? "true" : "false");	
 	return bChannelOpen;
 }
 
 
 void proxy_readerlist_setLogicalChannelOpen (unsigned long Lun, int iLogChannel)
 {
-	//LOGI("proxy_readerlist_setLogicalChannelOpen Lun: %lu, logical channel: %i", Lun,iLogChannel);	
+	LOGI("proxy_readerlist_setLogicalChannelOpen Lun: %lu, logical channel: %i", Lun,iLogChannel);	
 	for (int i=0; i<readerlist.size();++i)
 	{
 		if (readerlist[i].lun == Lun)
@@ -302,7 +303,7 @@ void proxy_readerlist_setLogicalChannelOpen (unsigned long Lun, int iLogChannel)
 
 bool proxy_readerlist_hasValidHandle (unsigned long Lun, int iLogChannel)
 {
-	//LOGI("proxy_readerlist_hasValidHandle Lun: %lu, logical channel: %i", Lun,iLogChannel);	
+	LOGI("proxy_readerlist_hasValidHandle Lun: %lu, logical channel: %i", Lun,iLogChannel);	
 	bool bHandleIsValid = false;		
 	for (int i=0; i<readerlist.size();++i)
 	{
@@ -332,7 +333,7 @@ bool proxy_readerlist_hasValidHandle (unsigned long Lun, int iLogChannel)
 		}
 
 	}
-	//LOGI("proxy_readerlist_hasValidHandle - Lun %lu, handle valid: %s", Lun, bHandleIsValid ? "true" : "false");	
+	LOGI("proxy_readerlist_hasValidHandle - Lun %lu, handle valid: %s", Lun, bHandleIsValid ? "true" : "false");	
 	return bHandleIsValid;
 }
 
@@ -340,7 +341,7 @@ bool proxy_readerlist_hasValidHandle (unsigned long Lun, int iLogChannel)
 
 long int proxy_readerlist_getchannel (unsigned long Lun)
 {
-	//LOGI("proxy_readerlist_getchannel- Lun %lu", Lun);
+	LOGI("proxy_readerlist_getchannel- Lun %lu", Lun);
 	long int channel = -1;	
 
 	for (int i=0; i<readerlist.size();++i)
@@ -357,7 +358,7 @@ long int proxy_readerlist_getchannel (unsigned long Lun)
 int proxy_readerlist_RequestLogicalChannel (unsigned long Lun) 
 {
 	int iFreeLogicalChannel = -1;	
-	//LOGI("proxy_readerlist_RequestLogicalChannel - Lun %lu",Lun);			
+	LOGI("proxy_readerlist_RequestLogicalChannel - Lun %lu",Lun);			
 	for (int i=0; i<readerlist.size();++i)
 	{
 		if (readerlist[i].lun == Lun)
@@ -388,7 +389,7 @@ int proxy_readerlist_RequestLogicalChannel (unsigned long Lun)
 			}
 		}
 	}
-	//LOGI("proxy_readerlist_RequestLogicalChannel - free channel %i",iFreeLogicalChannel);	
+	LOGI("proxy_readerlist_RequestLogicalChannel - free channel %i",iFreeLogicalChannel);	
 	return iFreeLogicalChannel;
 }	
 
@@ -396,7 +397,7 @@ int proxy_readerlist_RequestLogicalChannel (unsigned long Lun)
 
 String16 proxy_readerlist_getReaderName(unsigned long Lun) 
 {
-	//LOGI("proxy_readerlist_getReaderName - Lun %lu",Lun);
+	LOGI("proxy_readerlist_getReaderName - Lun %lu",Lun);
 	
 	String16 strReader = String16("");
 	unsigned long channel = -1;
@@ -414,17 +415,17 @@ String16 proxy_readerlist_getReaderName(unsigned long Lun)
 	}
 	int iLenBuffer = 0;
 	unsigned char* strName = convert_string16_to_string8(strReader, &iLenBuffer);
-	//LOGI("proxy_readerlist_getReaderName Lun: %lu, reader from list: %s",Lun,strName);
+	LOGI("proxy_readerlist_getReaderName Lun: %lu, reader from list: %s",Lun,strName);
 	if ((iListIndex == -1) || (strReader != String16(""))) return strReader;
 
 	if (strReader == String16(""))  //get readername at index = channel
 	{
-		//LOGI("proxy_readerlist_getReaderName - retrieve readernames from service");		
+		LOGI("proxy_readerlist_getReaderName - retrieve readernames from service");		
 		//get readernames at index specified by channel
 		String16 readerNames = gSmartcardAPI->getReaders();
 		int iLenBuffer = 0;
 		unsigned char* strName = convert_string16_to_string8(readerNames, &iLenBuffer);
-		//LOGI("proxy_readerlist_getReaderName - readerNames: %s",strName);
+		LOGI("proxy_readerlist_getReaderName - readerNames: %s",strName);
 		if (readerNames.size() > 0)
 		{
 			for (int i=0;i<=channel;++i)
@@ -433,18 +434,18 @@ String16 proxy_readerlist_getReaderName(unsigned long Lun)
 				int iIndexSeparator = readerNames.findFirst(separator[0]);
 				int iLenBuffer = 0;
 				unsigned char* strName = convert_string16_to_string8(readerNames, &iLenBuffer); 					
-				//LOGI("proxy_readerlist_getReaderName - readerlist: %s",strName);			
+				LOGI("proxy_readerlist_getReaderName - readerlist: %s",strName);			
 				if (iIndexSeparator != -1)
 				{
-					//LOGI("indexSeparator = %d / size of list %d" ,iIndexSeparator,readerNames.size() );					
+					LOGI("indexSeparator = %d / size of list %d" ,iIndexSeparator,readerNames.size() );					
 					strOneReader = String16(readerNames,iIndexSeparator,0);
 					readerNames.remove(readerNames.size()-iIndexSeparator,iIndexSeparator+1);
 					int iLenBuffer = 0;
 					unsigned char* strName = convert_string16_to_string8(strOneReader, &iLenBuffer); 					
-					//LOGI("proxy_readerlist_getReaderName - oneReaderName: %s",strName);					
+					LOGI("proxy_readerlist_getReaderName - oneReaderName: %s",strName);					
 					if (i==channel)
 					{
-						//LOGI("proxy_readerlist_getReaderName - add reader to list: %s, lun: %lu, channel: %lu",strName,Lun,channel);	
+						LOGI("proxy_readerlist_getReaderName - add reader to list: %s, lun: %lu, channel: %lu",strName,Lun,channel);	
 						readerlist.editItemAt(iListIndex).readername = strOneReader;
 						break;
 					}
@@ -463,45 +464,16 @@ int proxy_init() {
 
 	if (gSmartcardAPI !=0) 
 	{
-		//LOGI("proxy_init - already connected to service manager");
+		LOGI("proxy_init - already connected to service manager");
 		return 0;
 	}
-	
-
-	//LOGI("proxy_init - try connect to service manager");
-
-        sp<IServiceManager> sm = defaultServiceManager();
-        sp<IBinder> binder;
-        
-			
-	//LOGI("List available services:");                
-	Vector<String16> servicelist;
-	servicelist = sm->listServices();
-	int iCount = servicelist.size();
-	//LOGI("Numer of services available: %i",iCount);
-	for (int i=0; i<iCount;++i) 
-	{
-		String16 strNameUnicode = servicelist.itemAt(i);
-		int iLenName = strNameUnicode.size();			
-		int iLenBuffer = 0;
-		unsigned char* strName = convert_string16_to_string8(strNameUnicode, &iLenBuffer);
-		//LOGI("Service #%i: %s",i,strName); 
-	}
-	
-		
-	binder = sm->getService(android::String16("smartcardservice"));
-        if (binder == 0)
-	{
-		LOGW("Smartcard System Service not published");
-		return -1;
-	}
-        gSmartcardAPI = interface_cast<ISmartcardAPI>(binder);
+    gSmartcardAPI = new SmartcardAPI();
 	if (gSmartcardAPI == 0) 
 	{ 
 		LOGW("Smartcard System Service is null");  
 		return -1;
 	}
-	//LOGI("proxy_init - Smartcard System Service connected");
+	LOGI("proxy_init - Smartcard System Service connected");
 	return 0;
 }
 
@@ -517,13 +489,13 @@ String16 proxy_getReaders(void)
 extern "C"
 bool proxy_isCardPresent(unsigned long Lun)
 {
-	//LOGI("proxy_isCardPresent - Lun %lu",Lun);
+	LOGI("proxy_isCardPresent - Lun %lu",Lun);
 
 	String16 strReader = proxy_readerlist_getReaderName(Lun);
 	int iLenBuffer = 0;
 	unsigned char* strName = convert_string16_to_string8(strReader, &iLenBuffer);
 	bool bValue = gSmartcardAPI->isCardPresent(strReader);
-	//LOGI("readername used to check for card present: %s,card present: %s",strName,(bValue)?"true":"false");
+	LOGI("readername used to check for card present: %s,card present: %s",strName,(bValue)?"true":"false");
 	return bValue;
 }
 
@@ -531,7 +503,7 @@ bool proxy_isCardPresent(unsigned long Lun)
 //open channel if not yet open
 long long int proxy_openBasicChannel(unsigned long Lun, String16& aid)
 {
-	//LOGI("proxy_openBasicChannel- Lun %lu",Lun);	
+	LOGI("proxy_openBasicChannel- Lun %lu",Lun);	
 	if (!proxy_readerlist_hasValidHandle(Lun,0))
 	{
 		String16 strReader = proxy_readerlist_getReaderName(Lun);
@@ -540,11 +512,11 @@ long long int proxy_openBasicChannel(unsigned long Lun, String16& aid)
 		long long int handle = 0;
 		unsigned char* strName = convert_string16_to_string8(strReader, &iLenBuffer);
 		unsigned char* strAID = convert_string16_to_string8(aid, &iLenBuffer);
-		//LOGI("proxy_openBasicChannel - readername: %s, AID: %s", strName, strAID);
+		LOGI("proxy_openBasicChannel - readername: %s, AID: %s", strName, strAID);
 		
 		if (aid == String16(""))
 		{
-			//LOGI("proxy_openBasicChannel with AID");			
+			LOGI("proxy_openBasicChannel with AID");			
 			handle = gSmartcardAPI->openBasicChannel(strReader);
 		}
 		else 
@@ -553,7 +525,7 @@ long long int proxy_openBasicChannel(unsigned long Lun, String16& aid)
 			handle = gSmartcardAPI->openBasicChannelAid(strReader,aid);
 		}
 
-		//LOGI("proxy_openChannel - handle retrieved: %lli ", handle);			
+		LOGI("proxy_openChannel - handle retrieved: %lli ", handle);			
 		proxy_readerlist_addhandle (Lun, handle, 0);		    			
 		return handle;
 	}
@@ -562,22 +534,22 @@ long long int proxy_openBasicChannel(unsigned long Lun, String16& aid)
   
 long long int proxy_openLogicalChannel(const String16& reader, const String16& aid)
 {
-	//LOGI("proxy_openLogicalChannel");    	
+	LOGI("proxy_openLogicalChannel");    	
 	long long lValue = gSmartcardAPI->openLogicalChannel(reader, aid);
-	//LOGI("proxy_openChannel - handle retrieved: %lli ", lValue);	
+	LOGI("proxy_openChannel - handle retrieved: %lli ", lValue);	
 	return lValue;
 }
 
 void proxy_closeLogicalChannel(long long int handle)
 {
-	//LOGI("proxy_closeLogicalChannel - handle: %lli ", handle);	     	
+	LOGI("proxy_closeLogicalChannel - handle: %lli ", handle);	     	
 	gSmartcardAPI->closeChannel(handle);
 }
 
 
 String16 proxy_transmit_internal(long long int handle, const String16& command)
 {
-	//LOGI("proxy_transmit_internal - handle: %lli ", handle);	   	
+	LOGI("proxy_transmit_internal - handle: %lli ", handle);	   	
         String16 strValue = gSmartcardAPI->transmit(handle, command);
 	return strValue;
 }   
@@ -595,17 +567,17 @@ int proxy_getLastError()
 {
 	int iErrorCode = -1;	
 	// errormessage if select failed, because AID not available: "message SELECT SW1/2 error: 6a82"
-	//LOGI("call to proxy_getLastError");
+	LOGI("call to proxy_getLastError");
 	String16 strError = gSmartcardAPI->getLastError();
 	if (strError.size() == 0)
 	{
-		//LOGI("proxy_getLastError - no error");		
+		LOGI("proxy_getLastError - no error");		
 		return 0;  //no error
 	}
 	
 	int iLenBuffer = 0;
 	unsigned char* strMessage = convert_string16_to_string8(strError, &iLenBuffer);
-	//LOGI("proxy_getLastError - error message: %s", strMessage);
+	LOGI("proxy_getLastError - error message: %s", strMessage);
 
 
 	//if errormessage contains a SW1/2 error code e.g. "message SELECT SW1/2 error: 6a82" then mask out the errorcode and return as int
@@ -619,18 +591,18 @@ int proxy_getLastError()
 	{
 		String16 strMessagePart = String16(strError, strError.size()-iIndex, iIndex);
 		int iLenBuffer = 0; unsigned char* strMessage = convert_string16_to_string8(strMessagePart, &iLenBuffer);		
-		//LOGI("strMessagePart: %s",strMessage);
+		LOGI("strMessagePart: %s",strMessage);
 		if (strMessagePart.startsWith(strCompare)) 
 		{ 
-		  //LOGI("substring found ");
+		  LOGI("substring found ");
 		  bSubstringFound = true;
 		  int returncodelen = 0;
 		  String16 strReturncode = String16(strError, 4, strError.size()-4);
 		  
 		  iLenBuffer = 0; strMessage = convert_string16_to_string8(strReturncode, &iLenBuffer);	
-		  //LOGI("strReturncode: %s, .length(): %i",strMessage,iLenBuffer);
+		  LOGI("strReturncode: %s, .length(): %i",strMessage,iLenBuffer);
 		  unsigned char* returncode = convert_string16_to_buffer(strReturncode, &returncodelen);
-		  //LOGI("returncodelen (converted): %i",returncodelen);
+		  LOGI("returncodelen (converted): %i",returncodelen);
 		  if (returncodelen == 2)
 		  {
 			iErrorCode = 0;
@@ -640,7 +612,7 @@ int proxy_getLastError()
 		  break;
 		}
 	}       
-	//LOGI("proxy_getLastError - returned error code: %i", iErrorCode);
+	LOGI("proxy_getLastError - returned error code: %i", iErrorCode);
 	return iErrorCode; //error occured
 	
 }
@@ -651,18 +623,18 @@ extern "C"
 bool proxy_transmit ( unsigned long Lun, unsigned char* TxBuffer, unsigned long TxLength, unsigned char* RxBuffer, unsigned long* RxLength) 
 {
 
-	//LOGI("call to proxy_transmit");
+	LOGI("call to proxy_transmit");
 	String16 strCommandLogging("");	
 	strCommandLogging = convert_buffer_to_string16(TxBuffer, TxLength);
 	int iLenBufferLogging = 0;
 	unsigned char* strMessageLogging = convert_string16_to_string8(strCommandLogging, &iLenBufferLogging);
-	//LOGI("APDU: %s",strMessageLogging);
+	LOGI("APDU: %s",strMessageLogging);
 	
 	//unsigned char* strMessage = convert_string16_to_string8(strError, &iLenBuffer);
 
 	if ( (TxBuffer == 0) || (TxLength < 4) || (RxBuffer == 0) || (*RxLength < 2) )
 	{
-		//LOGI("parameter check failed");
+		LOGI("parameter check failed");
 		return false;
 	}
 
@@ -771,7 +743,7 @@ bool proxy_transmit ( unsigned long Lun, unsigned char* TxBuffer, unsigned long 
 			{
 				//close channel if a select occurs on a logical channel and reopen it
 				//close the channel to the SmartCard API
-				//LOGI("requested logical channel already opened with an AID - close/open channel performed");				
+				LOGI("requested logical channel already opened with an AID - close/open channel performed");				
 				long long int handle = -1;
 				handle = proxy_readerlist_gethandle(Lun, iLogicalChannel);			
 				proxy_readerlist_invalidateHandle (Lun, iLogicalChannel );  //invalidate the handle, so the logical channel will be reopened	
@@ -799,7 +771,7 @@ bool proxy_transmit ( unsigned long Lun, unsigned char* TxBuffer, unsigned long 
 			//the logical channel is virtually open, but no handle from SmartcardAPI, or open implicitely by logical channel set in CLA of SELECT 	
 			if ( ((bLogicalChannelOpen == true) || (bLogicalChannelOpen == false))  && (bHandleValid == false) )  
 			{
-				//LOGI("request logical channel with an AID - perform open channel");				
+				LOGI("request logical channel with an AID - perform open channel");				
 				long long int handle = 0;
 				String16 strAID("");	
 				
@@ -886,18 +858,18 @@ bool proxy_transmit ( unsigned long Lun, unsigned char* TxBuffer, unsigned long 
 	int iLenResponseAPDU = 0;
 
 	handle = proxy_readerlist_gethandle(Lun, iLogicalChannel);
-	//LOGI("proxy_transmit - handle: %lli ", handle);		
+	LOGI("proxy_transmit - handle: %lli ", handle);		
 	strCommand = convert_buffer_to_string16(TxBuffer, TxLength);
 	strResponse = proxy_transmit_internal(handle, strCommand);
 	responseAPDU = convert_string16_to_buffer(strResponse, &iLenResponseAPDU);
 
 	if ((responseAPDU == 0) || (iLenResponseAPDU < 2)) {
-		//LOGI("IFDHTransmitToICC - no response or too short");		
+		LOGI("IFDHTransmitToICC - no response or too short");		
 		return false;
 	}
 
 	if (*RxLength < iLenResponseAPDU) {
-		//LOGI("IFDHTransmitToICC - response buffer too short");
+		LOGI("IFDHTransmitToICC - response buffer too short");
 		return false;
 	}
 	else {
@@ -913,7 +885,7 @@ bool proxy_transmit ( unsigned long Lun, unsigned char* TxBuffer, unsigned long 
 extern "C"
 void proxy_closeAllChannels(unsigned long Lun)
 {
-	//LOGI("call to proxy_closeAllChannels %lu", Lun);
+	LOGI("call to proxy_closeAllChannels %lu", Lun);
 	//close channel for all handles
 	for (int i=0;i<=3;++i)
 	{

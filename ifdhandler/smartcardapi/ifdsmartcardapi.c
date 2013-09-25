@@ -28,17 +28,18 @@
 #define TAG_IFD_SIMULTANEOUS_ACCESS 0x0FAF
 #define TAG_IFD_SLOTS_NUMBER	0x0FAE
 
+//#define LOGI(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__);
 #define LOGI printf
 
 RESPONSECODE IFDHCreateChannel ( DWORD Lun, DWORD Channel ) {
 
-	LOGI("IFDHCreateChannel Lun: %lu  Channel: %lu  \n",Lun,Channel);/*remove for tracing
+	LOGI("IFDHCreateChannel Lun: %lu  Channel: %lu  \n",Lun,Channel);
 	if (proxy_init()!=0)
    	{
 		return IFD_COMMUNICATION_ERROR;
    	}
 
-   	proxy_readerlist_addchannel(Lun, Channel); 	*/
+   	proxy_readerlist_addchannel(Lun, Channel);
    	return IFD_SUCCESS;
 
   /* Lun - Logical Unit Number, use this for multiple card slots 
@@ -80,13 +81,13 @@ RESPONSECODE IFDHCreateChannel ( DWORD Lun, DWORD Channel ) {
 
 RESPONSECODE IFDHCloseChannel ( DWORD Lun ) {
 	
-	LOGI("IFDHCloseChannel Lun: %lu \n",Lun);/*remove for tracing
+	LOGI("IFDHCloseChannel Lun: %lu \n",Lun);
 	if (proxy_init()!=0)
 	{
 		return IFD_COMMUNICATION_ERROR;
 	}
 
-	proxy_closeAllChannels(Lun);*/
+	proxy_closeAllChannels(Lun);
 
 	/*	
 	if (proxy_getLastError() != 0) {
@@ -113,7 +114,7 @@ RESPONSECODE IFDHCloseChannel ( DWORD Lun ) {
 RESPONSECODE IFDHGetCapabilities ( DWORD Lun, DWORD Tag, 
 				   PDWORD Length, PUCHAR Value ) {
 
-	LOGI("IFDHGetCapabilities\n");/*remove for tracing
+	LOGI("IFDHGetCapabilities\n");
 	if (proxy_init()!=0)
 	{
 		LOGI("IFDHGetCapabilities - return IFD_COMMUNICATION_ERROR");		
@@ -140,7 +141,7 @@ RESPONSECODE IFDHGetCapabilities ( DWORD Lun, DWORD Tag,
 	default:
 		break;
 	}
-	LOGI("IFDHGetCapabilities - return IFD_ERROR_TAG");*/ RESPONSECODE ret = IFD_SUCCESS;
+	LOGI("IFDHGetCapabilities - return IFD_ERROR_TAG");
 	return ret;
   
   /* This function should get the slot/card capabilities for a particular
@@ -165,12 +166,12 @@ RESPONSECODE IFDHGetCapabilities ( DWORD Lun, DWORD Tag,
 RESPONSECODE IFDHSetCapabilities ( DWORD Lun, DWORD Tag, 
 			       DWORD Length, PUCHAR Value ) {
 
-	LOGI("IFDHSetCapabilities\n");/*remove for tracing
+	LOGI("IFDHSetCapabilities\n");
 	
 	if (proxy_init()!=0)
 	{
 		return IFD_COMMUNICATION_ERROR;
-	}*/
+	}
 
 	return IFD_ERROR_VALUE_READ_ONLY;
 
@@ -198,7 +199,7 @@ RESPONSECODE IFDHSetProtocolParameters ( DWORD Lun, DWORD Protocol,
 				   UCHAR Flags, UCHAR PTS1,
 				   UCHAR PTS2, UCHAR PTS3) {
 
-	LOGI("IFDHSetProtocolParameters\n");/*remove for tracing
+	LOGI("IFDHSetProtocolParameters\n");
 
 	if (proxy_init()!=0)
 	{
@@ -206,7 +207,7 @@ RESPONSECODE IFDHSetProtocolParameters ( DWORD Lun, DWORD Protocol,
 		return IFD_COMMUNICATION_ERROR;
 	}
 	
-	LOGI("IFDHSetProtocolParameters - return IFD_SUCCESS");*/
+	LOGI("IFDHSetProtocolParameters - return IFD_SUCCESS");
 	return IFD_SUCCESS;
 
   /* This function should set the PTS of a particular card/slot using
@@ -233,7 +234,7 @@ RESPONSECODE IFDHPowerICC ( DWORD Lun, DWORD Action,
 			    PUCHAR Atr, PDWORD AtrLength ) {
 
 	LOGI("IFDHPowerICC\n");
-/*remove for tracing
+
 	if (proxy_init()!=0)
 	{
 		return IFD_COMMUNICATION_ERROR;
@@ -271,7 +272,7 @@ RESPONSECODE IFDHPowerICC ( DWORD Lun, DWORD Action,
 
 	default:
 		break;
-	}*/ RESPONSECODE ret = IFD_SUCCESS;
+	}
 	return ret;
 
 
@@ -321,7 +322,6 @@ RESPONSECODE IFDHTransmitToICC ( DWORD Lun, SCARD_IO_HEADER SendPci,
 				 PSCARD_IO_HEADER RecvPci ) {
 
 	LOGI("IFDHTransmitToICC\n");
-/*remove for tracing
 
 	if (proxy_init()!=0)
 	{
@@ -331,7 +331,7 @@ RESPONSECODE IFDHTransmitToICC ( DWORD Lun, SCARD_IO_HEADER SendPci,
 	int bSuccess = 0;
 	bSuccess = proxy_transmit(Lun, TxBuffer, TxLength, RxBuffer, RxLength, RecvPci );
 	proxy_getLastError();
-	return (bSuccess ? IFD_SUCCESS : IFD_COMMUNICATION_ERROR);*/ return IFD_SUCCESS;
+	return (bSuccess ? IFD_SUCCESS : IFD_COMMUNICATION_ERROR);
 }
 		
 
@@ -385,13 +385,12 @@ RESPONSECODE IFDHControl ( DWORD Lun, PUCHAR TxBuffer,
 
 	LOGI("IFDHControl\n");
 
-/*remove for tracing
 	if (proxy_init()!=0)
 	{
 		return IFD_COMMUNICATION_ERROR;
 	}
 
-	*RxLength = 0;*/
+	*RxLength = 0;
 	return IFD_SUCCESS;
 
   /* This function performs a data exchange with the reader (not the card)
@@ -426,7 +425,6 @@ RESPONSECODE IFDHICCPresence( DWORD Lun ) {
 
 	LOGI("IFDHICCPresence\n");
 
-/*remove for tracing
 	if (proxy_init()!=0)
 	{
 		return IFD_COMMUNICATION_ERROR;
@@ -441,6 +439,6 @@ RESPONSECODE IFDHICCPresence( DWORD Lun ) {
 	{
 		return 	IFD_ICC_PRESENT;
 	}
-	return IFD_ICC_NOT_PRESENT;*/return IFD_ICC_PRESENT;
+	return IFD_ICC_NOT_PRESENT;
 }
 
