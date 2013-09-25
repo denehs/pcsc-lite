@@ -13,6 +13,11 @@
 
 namespace android {
 
+	SmartcardAPI::SmartcardAPI()
+	{
+		LOGI("SmartcardAPI init");
+		mClient.establish();
+	}
 
     String16 SmartcardAPI::getReaders(void)
     {

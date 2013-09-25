@@ -3,12 +3,14 @@
 
 #include <utils/RefBase.h>
 #include <utils/String16.h>
+#include "IccIPCClient.h"
 
 namespace android {
 
 class SmartcardAPI : public virtual RefBase
 {
 public:
+    SmartcardAPI();
     String16 getReaders(void);
     bool isCardPresent(const String16& reader);
     long long int openBasicChannel(const String16& reader);
@@ -17,6 +19,8 @@ public:
     String16 transmit(const long long int handle, const String16& command);
     void closeChannel(const long long int handle);
     String16 getLastError(void);
+private:
+    IccIPCClient mClient;
 }; //class
 
 }; //namespace
