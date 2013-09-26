@@ -27,8 +27,7 @@ namespace android {
 
     bool SmartcardAPI::isCardPresent(const String16& reader)
     {
-		LOGI("isCardPresent");	    
-    	return false;
+    	return mClient.iccCardPresent();
     }
 
     long long int SmartcardAPI::openBasicChannel(const String16& reader)

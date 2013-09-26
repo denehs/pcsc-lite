@@ -1,5 +1,5 @@
 #include <utils/Log.h>
-#include <cutils/sockets.h>
+#include <sys/socket.h>
 #include <sys/un.h>
 #include "IccIPCClient.h"
 
