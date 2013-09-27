@@ -80,6 +80,9 @@ namespace android {
 			mBuffer.mLength = 0;
 			return false;
 		}
+		else {
+			LOGI("recv %d bytes", mBuffer.mLength);
+		}
 		return true;
 	}
 
