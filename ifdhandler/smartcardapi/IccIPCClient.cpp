@@ -2,6 +2,7 @@
 #include <sys/socket.h>
 #include <sys/un.h>
 #include "IccIPCClient.h"
+#include "proxy.h"
 
 #undef LOG_TAG
 #define LOG_TAG "IccIPCClient"
@@ -28,10 +29,34 @@ namespace android {
 		mBuffer[mLength++] = '\0';
 	}
 
+	void IccIPCBuffer::addByte(int byte) {
+		unsigned char b = byte & 0xff;
+		*(mBuffer+mLength) = b;
+		mLength++;
+	}
+
+	void IccIPCBuffer::addString16(String16 str) {
+		int len;
+		unsigned char *buff = convert_string16_to_buffer(str, &len);
+		*(mBuffer+mLength) = len;
+		mLength++;
+		for (int i=0; i<len; i++)
+			*(mBuffer+mLength+i) = buff[i];
+		mLength += len;
+		free(buff);
+	}
+
 	bool IccIPCBuffer::readBoolean() {
 		bool *ptr = (bool *)(mBuffer + mPosition);
 		mPosition ++;
 		return *ptr;
+	}
+
+	String16 IccIPCBuffer::readString16() {
+		int len = *((unsigned char *)(mBuffer + mPosition));
+		mPosition++;
+		String16 res = convert_buffer_to_string16((unsigned char *)(mBuffer + mPosition), len);
+		return res;
 	}
 
 	IccIPCClient::IccIPCClient()
@@ -112,15 +137,23 @@ namespace android {
 		uint32 cla,
 		uint32 command,
 		uint32 channel,
-		const String16& path,
 		uint32 p1,
 		uint32 p2,
 		uint32 p3,
-		const String16& data,
-		const String16& data2) {
+		const String16& data) {
 		LOGI("iccExchangeAPDU");
 		checkConnection();
-		return String16("");
+		mBuffer.clear();
+		mBuffer.addString(ICC_IPC_COMMAND_EXCHANGE_APDU);
+		mBuffer.addByte(cla);
+		mBuffer.addByte(command);
+		mBuffer.addByte(channel);
+		mBuffer.addByte(p1);
+		mBuffer.addByte(p2);
+		mBuffer.addByte(p3);
+		mBuffer.addString16(data);
+		sendCommand();
+		return mBuffer.readString16();
 	}
 
 	bool IccIPCClient::iccCardPresent() {

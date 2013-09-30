@@ -13,7 +13,10 @@ namespace android {
 	public:
 		void clear();
 		void addString(char *str);
+		void addByte(int byte);
+		void addString16(String16 str);
 		bool readBoolean();
+		String16 readString16();
 
 	private:
 		char mBuffer[MAX_RESPONSE_SIZE+1];
@@ -35,12 +38,10 @@ namespace android {
 			uint32 cla,
 			uint32 command,
 			uint32 channel,
-			const String16& path,
 			uint32 p1,
 			uint32 p2,
 			uint32 p3,
-			const String16& data,
-			const String16& data2);
+			const String16& data);
 		bool iccCardPresent();
 
 	private:

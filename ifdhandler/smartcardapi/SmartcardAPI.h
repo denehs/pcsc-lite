@@ -20,6 +20,8 @@ public:
     void closeChannel(const long long int handle);
     String16 getLastError(void);
 private:
+    int parseChannelNumber(int cla);
+private:
     IccIPCClient mClient;
 }; //class
 
