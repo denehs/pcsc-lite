@@ -422,9 +422,6 @@ RESPONSECODE IFDHICCPresence( DWORD Lun ) {
      IFD_ICC_NOT_PRESENT
      IFD_COMMUNICATION_ERROR
   */
-
-	LOGI("IFDHICCPresence\n");
-
 	if (proxy_init()!=0)
 	{
 		return IFD_COMMUNICATION_ERROR;
@@ -432,7 +429,6 @@ RESPONSECODE IFDHICCPresence( DWORD Lun ) {
 
 	int bCardPresent = 0;
 	bCardPresent = proxy_isCardPresent(Lun);
-    LOGI("    Presence = %d\n", bCardPresent);
 	if (proxy_getLastError() != 0) {
 		return IFD_COMMUNICATION_ERROR;	
 	}

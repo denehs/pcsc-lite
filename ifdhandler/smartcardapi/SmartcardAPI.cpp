@@ -5,6 +5,7 @@
 #include <utils/String8.h>
 
 #include <private/utils/Static.h>
+#include "proxy.h"
 
 #undef LOG_TAG
 #define LOG_TAG "ifdhandler SmartcardAPI"
@@ -15,13 +16,11 @@ namespace android {
 
 	SmartcardAPI::SmartcardAPI()
 	{
-		LOGI("SmartcardAPI init");
 		mClient.establish();
 	}
 
     String16 SmartcardAPI::getReaders(void)
     {
-       	LOGI("getReaders");
 		return String16("SIM: UICC"); // currently only sim available
     }
 
@@ -51,7 +50,10 @@ namespace android {
     
     String16 SmartcardAPI::transmit(const long long int handle, const String16& command)
     {
-		LOGI("transmit");
+    	int len;
+    	unsigned char *str = convert_string16_to_string8(command, &len);
+		LOGI("transmit: %s", str);
+		free(str);
 		return String16("error in transact_transmit");
     }    
 

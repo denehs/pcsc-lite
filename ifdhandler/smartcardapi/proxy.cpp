@@ -17,6 +17,7 @@
 #include <binder/IServiceManager.h>
 #include <utils/Log.h>
 #include <sys/stat.h>
+#include "proxy.h"
 #include "SmartcardAPI.h"
 
 #undef LOG_TAG
@@ -47,12 +48,6 @@ typedef struct
 } channel_entry;
 
 Vector<channel_entry> readerlist;
-
-char convert_hex_digit_to_char(unsigned char value, int lowercase);
-String16 convert_buffer_to_string16(unsigned char* buffer, int length);
-unsigned char convert_char_to_hex_digit(char c);
-unsigned char* convert_string16_to_buffer(String16 str16, int* outlen);
-unsigned char* convert_string16_to_string8(String16 str16, int* outlen);
 
 extern "C"
 void proxy_readerlist_addchannel (unsigned long Lun, unsigned long Channel ) 
